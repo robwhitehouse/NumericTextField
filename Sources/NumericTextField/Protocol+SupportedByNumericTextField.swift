@@ -90,3 +90,23 @@ extension Float: SupportedByNumericTextField {
     }
   }
 }
+
+/// `CoreFoundation.CGFloat` support
+extension CGFloat: SupportedByNumericTextField {
+  public var allowDecimal: Bool { true }
+  public var stringRepresentation: String {
+    get {
+      self.formatted()
+    }
+    set {
+      let filteredString = Self.filterNonNumbers(value: newValue, allowDecimal: allowDecimal)
+      if filteredString.isEmpty {
+        self = .zero
+      } else {
+        if let unwrappedFloat = Float(filteredString) {
+          self = CGFloat(unwrappedFloat)
+        }
+      }
+    }
+  }
+}
